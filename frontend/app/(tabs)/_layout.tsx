@@ -29,7 +29,7 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="create"
                 options={{
-                    title: "Create Book",
+                    title: "Add A Pet",
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24} />
                     ),
