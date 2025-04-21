@@ -1,86 +1,98 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Alert, StyleSheet, Image, ScrollView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
 import Constants from "expo-constants";
 
 const API_URL = Constants.expoConfig?.extra?.API_URL;
 
-export default function Create() {
-    const [book, setBook] = useState({
-        title: "",
-        author: "",
+export default function AddPet() {
+    const [pet, setPet] = useState({
+        name: "",
+        species: "",
+        age: "",
         description: "",
-        price: ""
+        image: null as string | null,
     });
 
-    const handleChange = (Key: string, value: string) => {
-        setBook({ ...book, [Key]: value });
+    const handleChange = (key: string, value: string) => {
+        setPet({ ...pet, [key]: value });
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            base64: true,
+            quality: 0.7,
+        });
+
+        if (!result.canceled && result.assets.length > 0) {
+            setPet({ ...pet, image: `data:image/jpeg;base64,${result.assets[0].base64}` });
+        }
     };
 
     const handleSubmit = async () => {
-        if (!book.title || !book.author || !book.description || !book.price) {
-            Alert.alert("Error", "Please fill in all fields.");
+        if (!pet.name || !pet.species || !pet.age || !pet.description || !pet.image) {
+            Alert.alert("Error", "กรุณากรอกข้อมูลให้ครบทุกช่องและเลือกรูปภาพ");
             return;
         }
 
         try {
-            const response = await axios.post(`${API_URL}/books`, {
-                title: book.title,
-                author: book.author,
-                description: book.description,
-                price: parseFloat(book.price)
-            });
-
-            Alert.alert("Success", "Book created successfully.");
-            setBook({ title: "", author: "", description: "", price: "" });
+            await axios.post(`${API_URL}/pets`, pet);
+            Alert.alert("Success", "เพิ่มประวัติสัตว์เลี้ยงเรียบร้อยแล้ว");
+            setPet({ name: "", species: "", age: "", description: "", image: null });
         } catch (error) {
             console.error("API Error:", error);
-            Alert.alert("Error", "Failed to create book.");
+            Alert.alert("Error", "ไม่สามารถเพิ่มข้อมูลได้");
         }
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Create Book</Text>
+        <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.title}>เพิ่มประวัติสัตว์เลี้ยง</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Title"
-                value={book.title}
-                onChangeText={(text) => handleChange("title", text)}
-                keyboardType="default"
+                placeholder="ชื่อสัตว์เลี้ยง"
+                value={pet.name}
+                onChangeText={(text) => handleChange("name", text)}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Author"
-                value={book.author}
-                onChangeText={(text) => handleChange("author", text)}
-                keyboardType="default"
+                placeholder="สายพันธุ์"
+                value={pet.species}
+                onChangeText={(text) => handleChange("species", text)}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Description"
-                value={book.description}
-                onChangeText={(text) => handleChange("description", text)}
-                keyboardType="default"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Price"
+                placeholder="อายุ"
+                value={pet.age}
+                onChangeText={(text) => handleChange("age", text)}
                 keyboardType="numeric"
-                value={book.price}
-                onChangeText={(text) => handleChange("price", text)}
             />
-            <Button title="Create Book" onPress={handleSubmit} />
-        </View>
+            <TextInput
+                style={styles.input}
+                placeholder="คำอธิบาย"
+                value={pet.description}
+                onChangeText={(text) => handleChange("description", text)}
+            />
+            <Button title="เลือกรูปภาพ" onPress={pickImage} />
+            {pet.image && (
+                <Image
+                    source={{ uri: pet.image }}
+                    style={styles.imagePreview}
+                />
+            )}
+            <Button title="บันทึกข้อมูล" onPress={handleSubmit} />
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 20,
-        backgroundColor: "#c9ffb",
-        justifyContent : 'center',
+        backgroundColor: "#ecfff3",
+        flexGrow: 1,
     },
     title: {
         fontSize: 24,
@@ -96,5 +108,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderRadius: 5,
         backgroundColor: "#fff",
+    },
+    imagePreview: {
+        width: "100%",
+        height: 200,
+        marginTop: 10,
+        marginBottom: 20,
+        borderRadius: 10,
     },
 });
