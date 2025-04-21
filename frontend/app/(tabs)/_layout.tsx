@@ -33,6 +33,16 @@ export default function TabLayout() {
                     tabBarIcon: ({ color, focused }) => (
                         <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24} />
                     ),
+
+                }}
+            />
+            <Tabs.Screen
+                name="appointment"
+                options={{
+                    title: 'จองคิว',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="calendar" size={size} color={color} />
+                    ),
                 }}
             />
         </Tabs>

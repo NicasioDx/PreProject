@@ -21,7 +21,7 @@ export default function Page() {
 
     if (foundUser) {
       Alert.alert("Login Success", `Welcome, ${foundUser.email}!`);
-      router.push("frontend\app\(screens)\appointment.tsx"); // ใช้ path ที่ถูกต้อง
+      router.push("/appointment"); // ใช้ path ที่ถูกต้อง
     } else {
       Alert.alert("Login Failed", "Invalid email or password");
     }
