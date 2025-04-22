@@ -2,6 +2,10 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "esModuleInterop": true, // เพิ่มการตั้งค่านี้เพื่อรองรับการใช้งานแบบ CommonJS กับ ES modules
+    "skipLibCheck": true,    // ปิดการตรวจสอบไลบรารีเพื่อลดข้อผิดพลาดที่ไม่จำเป็น
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node", // การตั้งค่า module resolution สำหรับ Node.js
     "paths": {
       "@/*": [
         "./*"
@@ -12,6 +16,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "src/**/*.ts",  // เพิ่มเส้นทางสำหรับโปรเจกต์ Node.js หรือ Express
+    "src/**/*.tsx"   // เพิ่มเส้นทางสำหรับไฟล์ TypeScript ที่อาจใช้งานใน Express
   ]
 }

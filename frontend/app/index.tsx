@@ -28,7 +28,7 @@ export default function Page() {
   };
 
   const handleRegister = () => {
-    Alert.alert("Register", "Navigate to register screen (ยังไม่ได้ทำจริง)");
+    router.push("/register"); // ✅ ไปยังหน้า register ที่สร้างไว้
   };
 
   return (
