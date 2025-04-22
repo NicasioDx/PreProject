@@ -16,13 +16,38 @@ export default function AppointmentScreen() {
     hideDatePicker();
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!selectedDateTime) {
       Alert.alert("กรุณาเลือกวันและเวลา");
       return;
     }
-    Alert.alert('✅ จองคิวสำเร็จ!', 
-      `คุณจองคิวสำหรับ "${selectedService}" ในวันที่ ${selectedDateTime.toLocaleString()}`);
+  
+    try {
+      const response = await fetch('http://10.0.2.2:5000/api/appointments/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service: selectedService,
+          dateTime: selectedDateTime.toISOString(),
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.status === 201) {
+        Alert.alert('✅ จองคิวสำเร็จ!', 
+          `คุณจองคิวสำหรับ "${selectedService}" ในวันที่ ${new Date(data.appointment.dateTime).toLocaleString()}`);
+      } else if (response.status === 409) {
+        Alert.alert('❌ ไม่สามารถจองได้', 'ช่วงเวลานี้มีผู้จองแล้ว กรุณาเลือกเวลาใหม่');
+      } else {
+        Alert.alert('เกิดข้อผิดพลาด', data.message || 'ไม่สามารถทำรายการได้');
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      Alert.alert('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+    }
   };
 
   return (
