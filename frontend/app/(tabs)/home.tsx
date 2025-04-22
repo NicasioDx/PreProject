@@ -10,22 +10,16 @@ export default function HomeScreen() {
 
       <View style={styles.buttonContainer}>
         <Button
-          title="🐾 จองคิวตรวจโรค"
+          title="🐾 จองคิว"
           onPress={() => router.push("/appointment")}
         />
       </View>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="💉 จองคิวฉีดวัคซีน"
-          onPress={() => router.push("/vaccine")}
-        />
-      </View>
 
       <View style={styles.buttonContainer}>
         <Button
           title="🐶 เพิ่มประวัติสัตว์เลี้ยง"
-          onPress={() => router.push("/pet-profile")}
+          onPress={() => router.push("/create")}
         />
       </View>
     </View>

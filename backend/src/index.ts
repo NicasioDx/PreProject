@@ -1,16 +1,17 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import bookRouter from "./router/book-router";
-
-dotenv.config();
+// index.ts
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import authRoutes from './routes/auth-routes';  // ใช้ express.Application จากไฟล์ auth-routes.ts
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
-app.use("/api", bookRouter);
+app.use(bodyParser.json());  // ใช้ body-parser ใน express
 
-app.listen(PORT, () =>
-    console.log(`Server running on http://localhost:${PORT}`));
+app.use(authRoutes);  // ใช้ app ที่ส่งออกมาจาก auth-routes.ts
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
