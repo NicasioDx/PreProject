@@ -2,33 +2,42 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from "reac
 import { useState } from "react";
 import { useRouter } from "expo-router";
 
-// ข้อมูลผู้ใช้เทียม
-const mockUsers = [
-  { email: "user1@example.com", password: "password123" },
-  { email: "user2@example.com", password: "mypassword" },
-  { email: "admin@example.com", password: "admin123" },
-];
-
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter(); // ✅ ใช้ router
+  const router = useRouter();
 
-  const handleLogin = () => {
-    const foundUser = mockUsers.find(
-      (user) => user.email === email && user.password === password
-    );
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Validation Error", "Email and password are required");
+      return;
+    }
 
-    if (foundUser) {
-      Alert.alert("Login Success", `Welcome, ${foundUser.email}!`);
-      router.push("/appointment"); // ใช้ path ที่ถูกต้อง
-    } else {
-      Alert.alert("Login Failed", "Invalid email or password");
+    try {
+      const response = await fetch("http://10.0.2.2:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      Alert.alert("Login Success", `Welcome, ${data.user.email}!`);
+      router.push("/home");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      Alert.alert("Login Failed", error.message);
     }
   };
 
   const handleRegister = () => {
-    router.push("/register"); // ✅ ไปยังหน้า register ที่สร้างไว้
+    router.push("/register");
   };
 
   return (

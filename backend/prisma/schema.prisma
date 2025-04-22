@@ -18,3 +18,10 @@ model User {
   email    String @unique
   password String
 }
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  service   String
+  dateTime  DateTime
+  createdAt DateTime @default(now())
+}
