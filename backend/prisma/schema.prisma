@@ -19,6 +19,7 @@ model User {
   password String
 }
 
+
 model Pet {
   id          Int    @id @default(autoincrement())
   name        String
@@ -27,3 +28,12 @@ model Pet {
   description String
   image       String
 }
+
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  service   String
+  dateTime  DateTime
+  createdAt DateTime @default(now())
+}
+
