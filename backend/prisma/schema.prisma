@@ -26,7 +26,6 @@ model Pet {
   species     String
   age         Int
   description String
-  image       String
 }
 
 
